@@ -61,8 +61,8 @@ root_agent = Agent(
     name="summer_school_assistant",
     model=config.model,
     description=(
-        "Answers questions about the Google Cloud and cloud-native "
-        "topics covered during the UPB summer school."
+        "Answers questions about Milan,"
+        "including attractions, transportation, restaurants, shopping, travel tips, and suggested itineraries based on the uploaded knowledge base."
     ),
     instruction=SYSTEM_PROMPT,
     tools=[
