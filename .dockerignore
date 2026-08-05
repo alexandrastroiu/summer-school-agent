@@ -1,0 +1,10 @@
+.venv
+.venv-*
+.git
+.env
+.env.*
+__pycache__
+*.pyc
+tests
+requirements-lock.txt
+.DS_Store
