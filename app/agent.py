@@ -14,7 +14,7 @@ from app.knowledge import (
 )
 from app.prompts import SYSTEM_PROMPT
 from app.tools import AssistantTools
-from app.custom_tools import CustomTool
+from app.custom_tools import CustomTools
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -57,20 +57,20 @@ def create_knowledge_provider() -> KnowledgeProvider:
 config = load_config()
 knowledge_provider = create_knowledge_provider()
 assistant_tools = AssistantTools(knowledge_provider)
-custom_tool = CustomTool(knowledge_provider)
+custom_tools = CustomTools(knowledge_provider)
 
 root_agent = Agent(
     name="summer_school_assistant",
     model=config.model,
     description=(
         "Answers questions about Milan,"
-        "including attractions, transportation, restaurants, shopping, travel tips, and suggested itineraries based on the uploaded knowledge base."
+        "including attractions, transportation, restaurants, shopping, travel tips, ticket cost estimations, and suggested itineraries based on the uploaded knowledge base."
     ),
     instruction=SYSTEM_PROMPT,
     tools=[
         assistant_tools.list_documents,
         assistant_tools.read_document,
         assistant_tools.search_documents,
-        custom_tool.estimate_budget,
+        custom_tools.estimate_ticket_cost,
     ],
 )
