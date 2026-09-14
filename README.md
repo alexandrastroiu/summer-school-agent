@@ -1,16 +1,24 @@
-# Summer School Cloud AI Assistant
+# Milan City Guide AI Assistant
 
-A cloud-native AI assistant developed during the Google Cloud and Agentic AI Summer School at POLITEHNICA Bucharest.
+A travel assistant designed to answer questions about Milan, provide travel recommendations, and estimate ticket costs for a group of tourists based on the number of visitors, visitor categories and selected attractions using a custom tool.
 
-During Day 4, the application uses a local Markdown knowledge base and Google Agent Development Kit tools.
+The project was developed during the **Google Cloud and Agentic AI Summer School at POLITEHNICA Bucharest**.
 
-Later, the same application will use:
+## Project status
 
-- Gemini through Vertex AI;
-- Google Cloud Storage;
-- Cloud Run;
-- Docker;
-- Google Cloud Logging and Monitoring.
+The application was successfully deployed to Google Cloud Run, using Vertex AI for Gemini access and Cloud Storage for the knowledge base.
+
+The live deployment is no longer available because the temporary Google Cloud project provided during the summer school was deleted after the program. The application can be deployed again using a new Google Cloud project.
+
+## Key features
+
+- Conversational assistant built with Google ADK and designed to use Gemini through Vertex AI
+- Markdown knowledge base containing information about the city, travel tips and tourist attractions
+- Document listing, reading, and keyword-search tools
+- Custom tool for attraction cost estimation
+- Automated unit tests
+- Docker support for consistent execution across environments
+- Support for local files and Google Cloud Storage as knowledge sources
 
 ## Application architecture
 
@@ -25,6 +33,11 @@ ADK Agent
   +-- read_document(filename)
   |
   +-- search_documents(keyword)
+  |
+  |
+  |
+  +-- estimate_ticket_cost(number_of_visitors, visitor_categories, attractions)
+
              |
              v
        KnowledgeProvider
@@ -33,9 +46,7 @@ ADK Agent
 Local files      Cloud Storage
 ```
 
-The application initially uses `LocalKnowledgeProvider`.
-
-When the assigned Google Cloud project becomes available, the configuration can switch to `CloudKnowledgeProvider` without changing the agent or its tools.
+The application initially uses `LocalKnowledgeProvider`. It can switch from local Markdown files to Google Cloud Storage by selecting `CloudKnowledgeProvider` without changing the agent or its tools.
 
 ## Repository structure
 
@@ -51,17 +62,13 @@ summer-school-agent/
 |   `-- tools.py
 |
 |-- knowledge/
-|   |-- bigtable.md
-|   |-- cloud_sql.md
-|   |-- cloud_storage.md
-|   |-- compute_engine.md
-|   |-- day1.md
-|   |-- day2.md
-|   |-- day3.md
-|   |-- docker.md
+|   |-- attractions.md
+|   |-- average_travel_costs.md
+|   |-- events.md
 |   |-- faq.md
-|   |-- gke.md
-|   `-- kubernetes.md
+|   |-- food_and_shopping.md
+|   |-- milan_overview.md
+|   `-- transportation.md
 |
 |-- scripts/
 |   |-- generate_dependency_files.py
@@ -71,35 +78,63 @@ summer-school-agent/
 |-- tests/
 |   |-- __init__.py
 |   |-- test_agent.py
+|   |-- test_custom_tool.py
 |   |-- test_knowledge.py
 |   `-- test_tools.py
 |
 |-- .env.example
 |-- .gitignore
+|-- .dockerignore
+|-- Dockerfile
 |-- main.py
+|-- server.py
 |-- requirements.txt
 |-- requirements-lock.txt
 `-- README.md
 ```
 
+## Custom tool: attraction cost estimator
+
+ The application includes a custom tool that estimates the ticket cost and provides a cost breakdown for a trip to Milan. The calculation is based on the number of people, the selected attractions and the visitor category for each person in the group.
+
+```python
+ estimate_ticket_cost( 
+  number_of_visitors, 
+  visitor_categories, 
+  attractions 
+  )
+ ```
+
+ The tool uses information stored in the `average_travel_costs.md` file and accounts for different visitor categories when calculating the result. Actual ticket prices are subject to change, so the results should be treated as estimates.
+
+## Technologies
+- Python 3.13
+- Google Agent Development Kit (ADK)
+- Gemini through Vertex AI
+- Google Cloud Storage
+- Google Cloud Run
+- Docker
+
 ## Prerequisites
 
-Install the following before Day 4:
+Install the following:
 
-- Python 3.11;
-- Git;
-- Google Cloud CLI;
-- Visual Studio Code or another Python editor;
-- Docker Desktop or Docker Engine, recommended for Day 5.
+- Python 3.13
+- Git
+- Google Cloud CLI
+- Visual Studio Code or another Python editor
+- Docker Desktop or Docker Engine, if running the containerized version
 
 Verify the local tools:
 
 ```bash
-python3.11 --version
+python3.13 --version
 git --version
 gcloud --version
 docker --version
 ```
+
+**Running the interactive assistant requires an active Google Cloud project, valid Google Cloud credentials, and access to Vertex AI.**
 
 ## Local setup
 
@@ -109,19 +144,19 @@ docker --version
 cd summer-school-agent
 ```
 
-### 2. Create a Python 3.11 virtual environment
+### 2. Create a Python 3.13 virtual environment
 
 macOS or Linux:
 
 ```bash
-python3.11 -m venv .venv
+python3.13 -m venv .venv
 source .venv/bin/activate
 ```
 
 Windows PowerShell:
 
 ```powershell
-py -3.11 -m venv .venv
+py -3.13 -m venv .venv
 .venv\Scripts\Activate.ps1
 ```
 
@@ -134,7 +169,7 @@ python --version
 Expected:
 
 ```text
-Python 3.11.x
+Python 3.13.x
 ```
 
 On macOS or Linux, also check:
@@ -172,7 +207,7 @@ Windows Command Prompt:
 copy .env.example .env
 ```
 
-Use this configuration before receiving the Google Cloud project:
+Use the following configuration for local execution:
 
 ```text
 MODEL=gemini-2.5-flash
@@ -230,13 +265,14 @@ python -m unittest discover -s tests -v
 
 The tests cover:
 
-- local document discovery;
-- local document reading;
-- missing-document handling;
-- keyword search;
-- structured tool responses;
-- mocked Cloud Storage behaviour;
-- ADK agent construction.
+- local document discovery
+- local document reading
+- missing-document handling
+- keyword search
+- attraction cost calculation
+- structured tool responses
+- mocked Cloud Storage behavior
+- ADK agent construction
 
 The Cloud Storage tests use a mocked client and make no network requests.
 
@@ -264,19 +300,47 @@ The package exposes:
 root_agent
 ```
 
-The agent currently has three tools:
+The agent currently has four tools:
 
 ```text
 list_documents
 read_document
 search_documents
+estimate_ticket_cost
 ```
 
 The tools use the local knowledge provider until cloud mode is enabled.
 
+## Run with Docker
+
+Build and run the application locally using Docker. 
+
+Build the image:
+
+```bash
+docker build \
+  --tag summer-school-agent:local \
+  .
+```
+
+Run the container:
+
+```bash
+docker run --rm -d \
+  --name summer-school-agent-local \
+  -p 8080:8080 \
+  --env-file .env \
+  -v "$HOME/.config/gcloud/application_default_credentials.json:/tmp/adc.json:ro" \
+  -e GOOGLE_APPLICATION_CREDENTIALS=/tmp/adc.json \
+  summer-school-agent:local
+```
+
+After the container starts, open [http://localhost:8080](http://localhost:8080) in a browser.
+
+
 ## Cloud setup
 
-Complete this section only after receiving an assigned Google Cloud project.
+Complete this section after creating a new Google Cloud project.
 
 Authenticate:
 
@@ -342,34 +406,8 @@ Do not run these commands before the Vertex AI configuration and authentication 
 Once the ADK agent is connected to Gemini:
 
 ```text
-What workshop documents are available?
+What documents are available?
+What can I visit in Milan?
+What is the best time to visit Milan?
+Estimate the ticket cost for two adults visiting the Scala Museum and the Royal Palace of Milan.
 ```
-
-```text
-Which documents discuss Docker?
-```
-
-```text
-Read the Day 2 document and summarize the differences between Cloud Storage, Cloud SQL, and Bigtable.
-```
-
-```text
-Does the workshop material explain Kubernetes Services?
-```
-
-```text
-Which lab introduced GKE?
-```
-
-## Day 5 extension
-
-During Day 5, this application will be extended with:
-
-- a student-selected domain;
-- one custom domain-specific tool;
-- a Docker image;
-- deployment to Cloud Run;
-- logging and monitoring;
-- a public demonstration.
-
-Students will reuse the same agent and tool architecture rather than starting a new project.

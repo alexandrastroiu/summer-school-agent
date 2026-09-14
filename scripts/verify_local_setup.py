@@ -93,7 +93,7 @@ def main() -> None:
     print_check("Empty-search handling works")
 
     assert root_agent.name == "summer_school_assistant"
-    assert len(root_agent.tools) == 3
+    assert len(root_agent.tools) == 4
     print_check("ADK agent loaded")
     print(f"  Agent: {root_agent.name}")
     print(f"  Tools: {len(root_agent.tools)}")

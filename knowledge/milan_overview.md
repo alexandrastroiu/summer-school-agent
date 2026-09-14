@@ -23,7 +23,7 @@ The urban region of Milan is home to about 45% of businesses in the Lombardy reg
 
 ## Sports
 
-The Stadio Giuseppe Meazza, commonly known as the San Siro, is a football stadium in the San Siro district of Milan, Italy. Nicknamed "La Scala del calcio" (Italian for 'La Scala of football'),i t has a seating capacity of 75,817, making it the largest stadium in Italy and one of the largest stadiums in Europe.
+The Stadio Giuseppe Meazza, commonly known as the San Siro, is a football stadium in the San Siro district of Milan, Italy. Nicknamed "La Scala del calcio" (Italian for 'La Scala of football'),it has a seating capacity of 75,817, making it the largest stadium in Italy and one of the largest stadiums in Europe.
 It is the home stadium of the city's principal professional football clubs, AC Milan and Inter Milan.
 
 ## Education

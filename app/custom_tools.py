@@ -12,7 +12,7 @@ class CustomTools:
     
     def estimate_ticket_cost(self, number_of_visitors: int, visitor_categories: list[str], attractions: list[str]) -> dict[str, Any]:
         '''
-        Estimate the ticket cost and ticket cost breakdown for a trip to Milan based on the number of people, the attractions they want to visit and the visitor category for each person in the group. Mention attractions whose ticket prices are not available in the knowledge base if applicable. Mention that full price ticket prices are used by default if no category is specified for a visitor in the group. Mention that ticket pirces are subject to change and that the user should check the official websites of the attractions for the most up-to-date information. 
+        Estimate the ticket cost and ticket cost breakdown for a trip to Milan based on the number of people, the attractions they want to visit and the visitor category for each person in the group. Mention attractions whose ticket prices are not available in the knowledge base if applicable. Mention that full price ticket prices are used by default if no category is specified for a visitor in the group. Mention that ticket prices are subject to change and that the user should check the official websites of the attractions for the most up-to-date information. 
 
         Use this tool when the user asks about the estimated ticket cost for a trip to Milan.
 
